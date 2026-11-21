@@ -82,8 +82,8 @@ const school = (t) => ({ name: SCHOOL.name, lat: SCHOOL.lat, lng: SCHOOL.lng, pi
   });
   await User.create(students);
 
-  console.log('Demo data ready.');
+  // console.log('Demo data ready.');
   console.log('Admin :', adminEmail, '/', process.env.ADMIN_PASSWORD);
-  console.log('Others: warden@, driver1-3@ shanelegance.pk, se-001@student.shanelegance.pk /', PASS);
+  // console.log('Others: warden@, driver1-3@ shanelegance.pk, se-001@student.shanelegance.pk /', PASS);
   process.exit(0);
 })();

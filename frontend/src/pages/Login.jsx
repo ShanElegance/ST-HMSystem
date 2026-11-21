@@ -26,7 +26,7 @@ export default function Login() {
         <ul>
           <li><MapPinned size={18} /> Live bus tracking across Skardu</li>
           <li><Bus size={18} /> 3 buses · 3 drivers · smart routes</li>
-          <li><BedDouble size={18} /> 30 hostel rooms with Balti-style mess</li>
+          <li><BedDouble size={18} /> 30 hostel rooms with GB-style mess</li>
         </ul>
       </div>
       <form className="login-card" onSubmit={submit}>
