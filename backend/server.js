@@ -36,7 +36,7 @@ io.use(async (socket, next) => {
   try {
     const token = socket.handshake.auth?.token;
     if (!token) throw new Error('no token');
-    const p = jwt.verify(token, process.env.JWT_SECRET || 'skardu_secret_jwt_key_shanelegance');
+    const p = jwt.verify(token, process.env.JWT_SECRET);
     const u = await User.findById(p.id);
     if (!u || !u.active) throw new Error();
     socket.user = u;
