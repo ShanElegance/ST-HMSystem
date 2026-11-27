@@ -17,9 +17,9 @@ code{background:#eef2f6;padding:1px 6px;border-radius:6px}.splash{padding:60px;t
 .page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
 .page-head h1{font-size:26px;font-weight:800}.page-head p{margin:4px 0 0;color:var(--muted)}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:20px}
-.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin-bottom:20px}.grid-4 .card,.grid-3 .card{margin-bottom:0}
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:20px}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:20px;margin-bottom:20px}.grid-4 .card,.grid-3 .card{margin-bottom:0}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:20px;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:20px}
 .stat{display:flex;gap:16px;align-items:center}.stat-icon{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;color:#fff;background:var(--teal)}
 .stat-icon.amber{background:var(--amber)}.stat-icon.violet{background:var(--violet)}.stat-icon.green{background:var(--green)}
 .stat-label{color:var(--muted);font-weight:500}.stat-value{font-size:24px;font-weight:800}.stat-hint{font-size:12px;color:var(--muted)}
@@ -72,5 +72,69 @@ td{padding:12px;border-bottom:1px solid #f1f5f9;vertical-align:middle}tr:hover t
 .login-hero h1{font-size:44px;line-height:1.1}.login-hero p{font-size:17px;opacity:.9;max-width:460px}.login-hero ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:12px}.login-hero li{display:flex;gap:10px;align-items:center}
 .login-card{align-self:center;justify-self:center;width:100%;max-width:400px;padding:30px;display:flex;flex-direction:column;gap:16px}.login-card h2{font-size:28px}
 .demo{margin-top:8px;padding-top:16px;border-top:1px dashed var(--line)}.chip{border:1px solid var(--line);background:#fff;padding:6px 12px;border-radius:99px;margin:8px 8px 0 0;cursor:pointer;font:600 12px Inter}.chip:hover{background:#cffafe}
-@media(max-width:960px){.map-layout{grid-template-columns:1fr}.login{grid-template-columns:1fr}.login-hero{display:none}
-.sidebar{position:fixed;z-index:50;left:-270px;transition:.25s}.sidebar.open{left:0}.menu-btn{display:block}.content{padding:16px}.form.two{grid-template-columns:1fr}.topbar{padding:10px 14px}.who div:last-child{display:none}}
+/* Sidebar Mobile Drawer Overlay & Close Button */
+.sidebar-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);z-index:45}
+.mobile-close-btn{display:none;background:transparent;border:0;color:#fff;cursor:pointer;padding:6px;border-radius:8px;margin-left:auto}
+.topbar-brand{font-size:15px;font-weight:700;color:var(--navy);white-space:nowrap}
+
+/* Auth Tabs & Registration Form */
+.auth-tabs{display:flex;background:#f1f5f9;padding:4px;border-radius:12px;gap:4px;margin-bottom:8px}
+.auth-tab{flex:1;border:0;background:transparent;padding:9px 12px;border-radius:8px;font:600 13px Inter;color:var(--muted);cursor:pointer;transition:all .15s ease}
+.auth-tab.active{background:#fff;color:var(--navy);box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.login-card-wrap{width:100%;max-width:460px}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.security-notice{display:flex;align-items:center;gap:8px;font-size:12px;padding:8px 12px;border-radius:8px;background:#f8fafc;border:1px solid var(--line);color:var(--muted)}
+.mobile-brand{margin-bottom:4px}
+
+/* Easypaisa Payment Card & Slip Preview */
+.easypaisa-card{background:linear-gradient(135deg,#0e7490 0%,#065f46 100%);color:#fff;border-radius:var(--r);padding:20px;box-shadow:0 4px 18px rgba(14,116,144,.2);margin-bottom:20px;display:flex;flex-direction:column;gap:12px}
+.ep-badge{display:inline-block;background:#22c55e;color:#fff;font-weight:700;font-size:11px;padding:3px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
+.ep-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:rgba(255,255,255,.12);padding:12px 16px;border-radius:10px;backdrop-filter:blur(4px)}
+.ep-num{font-size:24px;font-weight:800;letter-spacing:1px;color:#fff;font-family:monospace}
+.ep-copy-btn{background:#fff;color:#065f46;border:0;padding:8px 16px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;transition:transform .15s ease}
+.ep-copy-btn:hover{transform:translateY(-1px)}
+.ep-instructions{font-size:12.5px;line-height:1.5;color:#e0f2fe}
+.easypaisa-slip-box{background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:12px 14px;margin-top:14px;font-size:12.5px;color:#14532d}
+
+/* Comprehensive Responsive Breakpoints */
+@media(max-width:960px){
+  .map-layout{grid-template-columns:1fr}
+  .login{grid-template-columns:1fr}
+  .login-hero{display:none}
+  .sidebar{position:fixed;z-index:50;left:-270px;transition:left .25s ease}
+  .sidebar.open{left:0;box-shadow:4px 0 24px rgba(0,0,0,.4)}
+  .mobile-close-btn{display:inline-flex;align-items:center;justify-content:center}
+  .menu-btn{display:block}
+  .content{padding:16px}
+  .form.two{grid-template-columns:1fr}
+  .topbar{padding:10px 14px}
+  .who div:last-child{display:none}
+}
+
+@media(max-width:640px){
+  .page-head{flex-direction:column;align-items:stretch;gap:12px}
+  .page-head h1{font-size:22px}
+  .actions{width:100%;display:flex;flex-direction:column}
+  .actions button,.actions a,.actions input,.actions select{width:100%!important;justify-content:center}
+  .form-grid-2{grid-template-columns:1fr}
+  .fee-slip-meta{grid-template-columns:1fr}
+  .ep-row{flex-direction:column;align-items:flex-start}
+  .ep-copy-btn{width:100%;justify-content:center}
+  .modal{width:95vw;max-height:92vh;border-radius:12px}
+  .modal-head{padding:14px 16px}
+  .modal-body{padding:16px}
+  .fee-slip-actions{flex-direction:column}
+  .fee-slip-actions button{width:100%}
+  .leaflet-container{height:320px!important}
+  .table-wrap table{min-width:540px}
+  .stat{padding:14px}
+  .stat-icon{width:42px;height:42px}
+  .stat-value{font-size:20px}
+}
+
+@media(max-width:420px){
+  .login-card{padding:20px 16px}
+  .login-card h2{font-size:22px}
+  .ep-num{font-size:20px}
+  .btn{padding:9px 12px;font-size:13px}
+}

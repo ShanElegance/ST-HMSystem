@@ -29,6 +29,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Login initialMode="register" />} />
       <Route element={<Guard><Layout /></Guard>}>
         <Route index element={<Home />} />
         <Route path="map" element={<Guard roles={['ADMIN', 'WARDEN', 'STUDENT']}><LiveMap /></Guard>} />

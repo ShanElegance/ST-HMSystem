@@ -17,6 +17,12 @@ export function AuthProvider({ children }) {
     setUser(data.user);
     return data.user;
   };
+  const register = async (studentData) => {
+    const { data } = await api.post('/auth/register', studentData);
+    localStorage.setItem('token', data.token);
+    setUser(data.user);
+    return data.user;
+  };
   const logout = () => { localStorage.removeItem('token'); setUser(null); };
-  return <Ctx.Provider value={{ user, loading, login, logout }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ user, loading, login, register, logout }}>{children}</Ctx.Provider>;
 }

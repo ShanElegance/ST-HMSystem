@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { CheckCircle2, RefreshCw, Wallet, Clock, Receipt, Download, Printer, FileText } from 'lucide-react';
+import { CheckCircle2, RefreshCw, Wallet, Clock, Receipt, Download, Printer, FileText, Copy, Check } from 'lucide-react';
 import { api, errMsg, pkr, fmtDate, currentMonth, monthLabel } from '../api';
 import { useFetch } from '../hooks';
 import { useAuth } from '../context/AuthContext';
 import { PageHeader, Stat, Badge, Spinner, Empty, Modal } from '../components/ui';
-import { FEE_LABEL } from '../constants';
+import { FEE_LABEL, EASYPAISA_ACCOUNT } from '../constants';
 
 export default function Fees() {
   const { user } = useAuth();
@@ -13,10 +13,20 @@ export default function Fees() {
   const [month, setMonth] = useState(currentMonth());
   const [status, setStatus] = useState('');
   const [activeSlip, setActiveSlip] = useState(null);
+  const [copiedEp, setCopiedEp] = useState(false);
   const { data, loading, reload } = useFetch(`/fees?month=${staff ? month : ''}&status=${status}`, [month, status]);
   const { data: st } = useFetch('/fees/structure');
   const paid = (data || []).filter((f) => f.status === 'PAID').reduce((a, f) => a + f.amount, 0);
   const due = (data || []).filter((f) => f.status === 'UNPAID').reduce((a, f) => a + f.amount, 0);
+
+  const copyEasypaisa = () => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(EASYPAISA_ACCOUNT.number);
+    }
+    setCopiedEp(true);
+    toast.success(`Easypaisa number copied: ${EASYPAISA_ACCOUNT.number}`);
+    setTimeout(() => setCopiedEp(false), 2000);
+  };
 
   const generate = async () => {
     try { const { data: r } = await api.post('/fees/generate', { month }); toast.success(`${r.created} fee entries created`); reload(); } catch (e) { toast.error(errMsg(e)); }
@@ -157,8 +167,10 @@ export default function Fees() {
     </table>
     <div class="info">
       <strong>Payment Information:</strong><br />
-      1. Fee can be paid at the School Accounts Office (Cash) or via JazzCash, Easypaisa, or Bank Transfer.<br />
-      2. Please retain this receipt / challan slip for verification.
+      • <strong>Easypaisa Account:</strong> <span style="font-size:14px; font-weight:700; color:#0e7490;">${EASYPAISA_ACCOUNT.number}</span> (Title: <strong>${EASYPAISA_ACCOUNT.title}</strong>)<br />
+      • Please mention Student Roll No <strong>${sRoll}</strong> in the Easypaisa remarks / note.<br />
+      • Fee can also be paid at School Accounts Office (Cash) or via JazzCash / Bank Transfer.<br />
+      • Please retain this receipt / challan slip for verification.
     </div>
     <div class="footer">
       <div class="sign">Accounts Officer<br />Shan Elegance Skardu</div>
@@ -222,6 +234,33 @@ export default function Fees() {
         <Stat icon={Clock} label="Pending" value={pkr(due)} tone="amber" />
         <Stat icon={Receipt} label="Entries" value={data?.length || 0} />
       </div>
+
+      {!staff && (
+        <div className="easypaisa-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span className="ep-badge">Easypaisa Payment</span>
+              <h3 style={{ margin: 0, color: '#fff', fontSize: 16 }}>Official Fee Payment Channel</h3>
+            </div>
+            <small style={{ color: '#bae6fd' }}>Shan Elegance Public School & Hostel</small>
+          </div>
+          <div className="ep-row">
+            <div>
+              <small style={{ color: '#e0f2fe', textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 11 }}>Easypaisa Account Number</small>
+              <div className="ep-num">{EASYPAISA_ACCOUNT.number}</div>
+              <small style={{ color: '#bae6fd' }}>Account Title: <b>{EASYPAISA_ACCOUNT.title}</b></small>
+            </div>
+            <button type="button" className="ep-copy-btn" onClick={copyEasypaisa}>
+              {copiedEp ? <Check size={16} /> : <Copy size={16} />}
+              {copiedEp ? 'Copied!' : 'Copy Number'}
+            </button>
+          </div>
+          <p className="ep-instructions" style={{ margin: 0 }}>
+            {EASYPAISA_ACCOUNT.instructions}
+          </p>
+        </div>
+      )}
+
       <div className="card table-wrap">
         {loading ? <Spinner /> : !data?.length ? <Empty>No fee entries{staff ? ' — click “Generate month”.' : '.'}</Empty> : (
           <table>
@@ -324,6 +363,17 @@ export default function Fees() {
                 </tr>
               </tbody>
             </table>
+            <div className="easypaisa-slip-box">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
+                <span className="ep-badge">Easypaisa Online Transfer</span>
+                <button type="button" className="btn sm ghost" onClick={copyEasypaisa} style={{ padding: '3px 8px', fontSize: 12 }}>
+                  {copiedEp ? <Check size={14} /> : <Copy size={14} />} {EASYPAISA_ACCOUNT.number}
+                </button>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5 }}>
+                Pay via Easypaisa to Account: <b>{EASYPAISA_ACCOUNT.number}</b> (Title: <b>{EASYPAISA_ACCOUNT.title}</b>). Mention Roll No: <b>{activeSlip.student?.rollNo || user?.rollNo}</b> in transfer remarks.
+              </p>
+            </div>
           </div>
           <div className="fee-slip-actions">
             <button className="btn ghost" onClick={() => setActiveSlip(null)}>Close</button>
