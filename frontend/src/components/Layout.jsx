@@ -15,8 +15,8 @@ export default function Layout() {
   const [open, setOpen] = useState(false);
   return (
     <div className="shell">
-      {/* Mobile backdrop */}
-      <div className={`sidebar-backdrop ${open ? 'open' : ''}`} onClick={() => setOpen(false)} />
+      {/* Mobile drawer backdrop only when open */}
+      {open && <div className="sidebar-backdrop" onClick={() => setOpen(false)} />}
 
       <aside className={`sidebar ${open ? 'open' : ''}`}>
         <div className="brand">

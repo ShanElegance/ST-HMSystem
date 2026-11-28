@@ -19,9 +19,7 @@ export function AuthProvider({ children }) {
   };
   const register = async (studentData) => {
     const { data } = await api.post('/auth/register', studentData);
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
-    return data.user;
+    return data;
   };
   const logout = () => { localStorage.removeItem('token'); setUser(null); };
   return <Ctx.Provider value={{ user, loading, login, register, logout }}>{children}</Ctx.Provider>;

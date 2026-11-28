@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Mountain, Bus, BedDouble, MapPinned, GraduationCap, UserPlus, LogIn, ShieldAlert } from 'lucide-react';
+import { Mountain, Bus, BedDouble, MapPinned, GraduationCap, ShieldAlert, ArrowRight, Eye, EyeOff, Lock, Mail, User, Phone, BookOpen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { errMsg } from '../api';
 
@@ -12,7 +12,7 @@ const DEMO = [
   ['Student', 'se-012@student.shanelegance.pk', 'Skardu@123']
 ];
 
-const CLASSES = ['6th', '7th', '8th', '9th', '10th', '11th (FSc)', '12th (FSc)'];
+const CLASSES = ['Nursery', 'Prep', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th (FSc)', '12th (FSc)'];
 
 export default function Login({ initialMode = 'login' }) {
   const { user, login, register } = useAuth();
@@ -22,6 +22,11 @@ export default function Login({ initialMode = 'login' }) {
   const isRegisterRoute = location.pathname === '/register' || initialMode === 'register';
   const [isRegister, setIsRegister] = useState(isRegisterRoute);
   const [busy, setBusy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    setIsRegister(location.pathname === '/register' || initialMode === 'register');
+  }, [location.pathname, initialMode]);
 
   // Login form state
   const [f, setF] = useState({ email: '', password: '' });
@@ -74,7 +79,10 @@ export default function Login({ initialMode = 'login' }) {
         guardianName: reg.guardianName,
         guardianPhone: reg.guardianPhone,
       });
-      toast.success('Registration successful! Welcome to Shan Elegance.');
+      toast.success('Registration successful! Please sign in with your email and password.');
+      setF({ email: reg.email, password: '' });
+      setIsRegister(false);
+      navigate('/login');
     } catch (er) {
       toast.error(errMsg(er));
     } finally {
@@ -84,223 +92,312 @@ export default function Login({ initialMode = 'login' }) {
 
   return (
     <div className="login">
+      {/* Left hero banner (desktop) */}
       <div className="login-hero">
-        <Mountain size={44} />
-        <h1>Shan Elegance<br />Transport & Hostel</h1>
-        <p>One portal for school buses, live tracking, hostel rooms, mess and fees — built for Skardu.</p>
-        <ul>
-          <li><MapPinned size={18} /> Live bus tracking across Skardu</li>
-          <li><Bus size={18} /> 3 buses · 3 drivers · smart routes</li>
-          <li><BedDouble size={18} /> 30 hostel rooms with GB-style mess</li>
-        </ul>
-      </div>
-
-      <div className="login-card-wrap">
-        <div className="mobile-brand">
-          <Mountain size={32} />
+        <div className="hero-brand">
+          <div className="hero-logo-box">
+            <Mountain size={36} color="#fff" />
+          </div>
           <div>
-            <b>Shan Elegance</b>
-            <small>Skardu · Gilgit-Baltistan</small>
+            <h2 style={{ color: '#fff', margin: 0, fontSize: 24, fontWeight: 800 }}>Shan Elegance</h2>
+            <small style={{ color: '#9fc3d4', fontSize: 13 }}>Public School & Hostel · Skardu</small>
           </div>
         </div>
 
-        <div className="auth-tabs">
-          <button
-            type="button"
-            className={`auth-tab ${!isRegister ? 'active' : ''}`}
-            onClick={() => { setIsRegister(false); navigate('/login'); }}
-          >
-            <LogIn size={16} /> Sign In
-          </button>
-          <button
-            type="button"
-            className={`auth-tab ${isRegister ? 'active' : ''}`}
-            onClick={() => { setIsRegister(true); navigate('/register'); }}
-          >
-            <GraduationCap size={16} /> Student Register
-          </button>
+        <div className="hero-content">
+          <h1>Digital Campus &<br />Transport Portal</h1>
+          <p>
+            Real-time school bus GPS tracking, hostel room allotments, GB-style mess schedules, and online fee payments for parents and students in Skardu.
+          </p>
+          <ul className="hero-features">
+            <li><MapPinned size={20} /> Live GPS Bus Tracking across Skardu Valley</li>
+            <li><Bus size={20} /> Verified School Transport & Safe Pick/Drop Routes</li>
+            <li><BedDouble size={20} /> Hostel Room Allotments & Mess Management</li>
+          </ul>
         </div>
 
-        {!isRegister ? (
-          <form className="login-card" onSubmit={handleLogin}>
-            <h2>Welcome back</h2>
-            <p className="muted">Sign in to your account</p>
-            <label>
-              Email address
-              <input
-                type="email"
-                required
-                value={f.email}
-                onChange={(e) => setF({ ...f, email: e.target.value })}
-                placeholder="you@shanelegance.pk"
-              />
-            </label>
-            <label>
-              Password
-              <input
-                type="password"
-                required
-                value={f.password}
-                onChange={(e) => setF({ ...f, password: e.target.value })}
-                placeholder="••••••••"
-              />
-            </label>
-            <button className="btn primary block" disabled={busy}>
-              {busy ? 'Signing in…' : 'Sign in'}
-            </button>
+        <div className="hero-footer">
+          <small>© {new Date().getFullYear()} Shan Elegance Public School & Hostel, Skardu</small>
+        </div>
+      </div>
 
-            <div className="auth-switch">
-              <span>New student?</span>{' '}
-              <button
-                type="button"
-                className="link-btn"
-                onClick={() => { setIsRegister(true); navigate('/register'); }}
-              >
-                Create student account
-              </button>
+      {/* Right form container */}
+      <div className="login-form-area">
+        <div className="login-card-wrap">
+          <div className="mobile-brand">
+            <div className="mobile-logo-box">
+              <Mountain size={28} color="#fff" />
             </div>
+            <div>
+              <b>Shan Elegance</b>
+              <small>Public School & Hostel · Skardu</small>
+            </div>
+          </div>
 
-            {import.meta.env.DEV && (
-              <div className="demo">
-                <small className="muted">Demo Accounts (click to fill)</small>
-                <div>
-                  {DEMO.map(([l, e, p]) => (
-                    <button type="button" key={l} className="chip" onClick={() => setF({ email: e, password: p })}>
-                      {l}
-                    </button>
-                  ))}
-                </div>
+          {!isRegister ? (
+            /* Sign In Form */
+            <div className="auth-card">
+              <div className="auth-card-head">
+                <span className="auth-pill">Official Portal</span>
+                <h2>Welcome Back</h2>
+                <p>Enter your credentials to access your portal.</p>
               </div>
-            )}
-          </form>
-        ) : (
-          <form className="login-card reg-card" onSubmit={handleRegister}>
-            <div className="student-only-badge">
-              <GraduationCap size={17} /> Student Registration Only
+
+              <form onSubmit={handleLogin} className="auth-form">
+                <div className="input-group">
+                  <label htmlFor="login-email">Email Address</label>
+                  <div className="input-with-icon">
+                    <Mail size={18} className="field-icon" />
+                    <input
+                      id="login-email"
+                      type="email"
+                      required
+                      value={f.email}
+                      onChange={(e) => setF({ ...f, email: e.target.value })}
+                      placeholder="student@shanelegance.pk"
+                      autoComplete="email"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="login-password">Password</label>
+                  <div className="input-with-icon">
+                    <Lock size={18} className="field-icon" />
+                    <input
+                      id="login-password"
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={f.password}
+                      onChange={(e) => setF({ ...f, password: e.target.value })}
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      className="pwd-toggle-btn"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label="Toggle password visibility"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" className="btn primary block auth-btn" disabled={busy}>
+                  {busy ? 'Signing in…' : 'Sign In'}
+                  {!busy && <ArrowRight size={17} />}
+                </button>
+
+                {/* Prominent link directly below the Sign In button to go to Student Register form */}
+                <div className="auth-footer-link">
+                  <span>Are you a new student?</span>
+                  <button
+                    type="button"
+                    className="auth-link-btn"
+                    onClick={() => { setIsRegister(true); navigate('/register'); }}
+                  >
+                    Register as Student
+                  </button>
+                </div>
+              </form>
+
+              {import.meta.env.DEV && (
+                <div className="demo-box">
+                  <div className="demo-title">Quick Demo Sign-In</div>
+                  <div className="demo-chips">
+                    {DEMO.map(([l, e, p]) => (
+                      <button
+                        type="button"
+                        key={l}
+                        className="demo-chip"
+                        onClick={() => setF({ email: e, password: p })}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <h2>Create Student Account</h2>
-            <p className="muted">Register to access bus tracking, hostel, and fees.</p>
+          ) : (
+            /* Student Registration Form */
+            <div className="auth-card reg-auth-card">
+              <div className="auth-card-head">
+                <span className="auth-pill student-pill">
+                  <GraduationCap size={15} /> Student Registration
+                </span>
+                <h2>Register as Student</h2>
+                <p>Create your student account to access bus tracking, hostel, and fee slips.</p>
+              </div>
 
-            <div className="form-grid-2">
-              <label>
-                Full Name *
-                <input
-                  required
-                  value={reg.name}
-                  onChange={(e) => setReg({ ...reg, name: e.target.value })}
-                  placeholder="e.g. Ali Haider"
-                />
-              </label>
-              <label>
-                Email Address *
-                <input
-                  type="email"
-                  required
-                  value={reg.email}
-                  onChange={(e) => setReg({ ...reg, email: e.target.value })}
-                  placeholder="student@shanelegance.pk"
-                />
-              </label>
+              <form onSubmit={handleRegister} className="auth-form">
+                <div className="form-grid-2">
+                  <div className="input-group">
+                    <label htmlFor="reg-name">Student Full Name *</label>
+                    <div className="input-with-icon">
+                      <User size={18} className="field-icon" />
+                      <input
+                        id="reg-name"
+                        required
+                        value={reg.name}
+                        onChange={(e) => setReg({ ...reg, name: e.target.value })}
+                        placeholder="e.g. Ali Haider"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="reg-email">Student Email Address *</label>
+                    <div className="input-with-icon">
+                      <Mail size={18} className="field-icon" />
+                      <input
+                        id="reg-email"
+                        type="email"
+                        required
+                        value={reg.email}
+                        onChange={(e) => setReg({ ...reg, email: e.target.value })}
+                        placeholder="student@shanelegance.pk"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-grid-2">
+                  <div className="input-group">
+                    <label htmlFor="reg-password">Password (min 6 chars) *</label>
+                    <div className="input-with-icon">
+                      <Lock size={18} className="field-icon" />
+                      <input
+                        id="reg-password"
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        minLength={6}
+                        value={reg.password}
+                        onChange={(e) => setReg({ ...reg, password: e.target.value })}
+                        placeholder="••••••••"
+                      />
+                      <button
+                        type="button"
+                        className="pwd-toggle-btn"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label="Toggle password visibility"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="reg-confirm">Confirm Password *</label>
+                    <div className="input-with-icon">
+                      <Lock size={18} className="field-icon" />
+                      <input
+                        id="reg-confirm"
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        minLength={6}
+                        value={reg.confirmPassword}
+                        onChange={(e) => setReg({ ...reg, confirmPassword: e.target.value })}
+                        placeholder="••••••••"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-grid-2">
+                  <div className="input-group">
+                    <label htmlFor="reg-class">Class / Grade *</label>
+                    <div className="input-with-icon">
+                      <BookOpen size={18} className="field-icon" />
+                      <select
+                        id="reg-class"
+                        value={reg.className}
+                        onChange={(e) => setReg({ ...reg, className: e.target.value })}
+                      >
+                        {CLASSES.map((c) => (
+                          <option key={c} value={c}>Class {c}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="reg-roll">Roll Number (Optional)</label>
+                    <input
+                      id="reg-roll"
+                      value={reg.rollNo}
+                      onChange={(e) => setReg({ ...reg, rollNo: e.target.value })}
+                      placeholder="Auto-generated if empty"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-grid-2">
+                  <div className="input-group">
+                    <label htmlFor="reg-phone">Student Phone</label>
+                    <div className="input-with-icon">
+                      <Phone size={18} className="field-icon" />
+                      <input
+                        id="reg-phone"
+                        value={reg.phone}
+                        onChange={(e) => setReg({ ...reg, phone: e.target.value })}
+                        placeholder="03XX-XXXXXXX"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="reg-guardian">Father / Guardian Name</label>
+                    <input
+                      id="reg-guardian"
+                      value={reg.guardianName}
+                      onChange={(e) => setReg({ ...reg, guardianName: e.target.value })}
+                      placeholder="Guardian Name"
+                    />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="reg-gphone">Guardian Phone Number</label>
+                  <div className="input-with-icon">
+                    <Phone size={18} className="field-icon" />
+                    <input
+                      id="reg-gphone"
+                      value={reg.guardianPhone}
+                      onChange={(e) => setReg({ ...reg, guardianPhone: e.target.value })}
+                      placeholder="03XX-XXXXXXX"
+                    />
+                  </div>
+                </div>
+
+                <div className="security-notice">
+                  <ShieldAlert size={18} style={{ flexShrink: 0, color: '#0e7490' }} />
+                  <div>
+                    <strong>Student Only Registration:</strong> Admin, Warden, and Driver accounts are provisioned exclusively by the school administration.
+                  </div>
+                </div>
+
+                <button type="submit" className="btn primary block auth-btn" disabled={busy}>
+                  {busy ? 'Creating Student Account…' : 'Register as Student'}
+                  {!busy && <ArrowRight size={17} />}
+                </button>
+
+                {/* Prominent link directly below the Register button to return to Sign In */}
+                <div className="auth-footer-link">
+                  <span>Already have an account?</span>
+                  <button
+                    type="button"
+                    className="auth-link-btn"
+                    onClick={() => { setIsRegister(false); navigate('/login'); }}
+                  >
+                    Sign In here
+                  </button>
+                </div>
+              </form>
             </div>
-
-            <div className="form-grid-2">
-              <label>
-                Password (min 6 chars) *
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={reg.password}
-                  onChange={(e) => setReg({ ...reg, password: e.target.value })}
-                  placeholder="••••••••"
-                />
-              </label>
-              <label>
-                Confirm Password *
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={reg.confirmPassword}
-                  onChange={(e) => setReg({ ...reg, confirmPassword: e.target.value })}
-                  placeholder="••••••••"
-                />
-              </label>
-            </div>
-
-            <div className="form-grid-2">
-              <label>
-                Class *
-                <select
-                  value={reg.className}
-                  onChange={(e) => setReg({ ...reg, className: e.target.value })}
-                >
-                  {CLASSES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Roll Number (Optional)
-                <input
-                  value={reg.rollNo}
-                  onChange={(e) => setReg({ ...reg, rollNo: e.target.value })}
-                  placeholder="Auto-assigned if empty"
-                />
-              </label>
-            </div>
-
-            <div className="form-grid-2">
-              <label>
-                Student Phone (+92)
-                <input
-                  value={reg.phone}
-                  onChange={(e) => setReg({ ...reg, phone: e.target.value })}
-                  placeholder="+92 355 0000000"
-                />
-              </label>
-              <label>
-                Guardian Name
-                <input
-                  value={reg.guardianName}
-                  onChange={(e) => setReg({ ...reg, guardianName: e.target.value })}
-                  placeholder="Father / Guardian Name"
-                />
-              </label>
-            </div>
-
-            <label>
-              Guardian Phone
-              <input
-                value={reg.guardianPhone}
-                onChange={(e) => setReg({ ...reg, guardianPhone: e.target.value })}
-                placeholder="+92 355 0000000"
-              />
-            </label>
-
-            <div className="security-notice">
-              <ShieldAlert size={16} />
-              <span>
-                <strong>Security Policy:</strong> This portal registration creates <strong>Student accounts only</strong>. Admin, Warden, and Driver accounts are managed exclusively by the school administration.
-              </span>
-            </div>
-
-            <button className="btn primary block" disabled={busy}>
-              {busy ? 'Creating account…' : 'Complete Registration'}
-            </button>
-
-            <div className="auth-switch">
-              <span>Already registered?</span>{' '}
-              <button
-                type="button"
-                className="link-btn"
-                onClick={() => { setIsRegister(false); navigate('/login'); }}
-              >
-                Sign in here
-              </button>
-            </div>
-          </form>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
